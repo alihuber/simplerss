@@ -1,0 +1,39 @@
+type Subscription {
+  url: String
+}
+
+input SubscriptionInput {
+  url: String
+}
+
+type Folder {
+  folderName: String
+  subscriptions: [Subscription]
+}
+
+input FolderInput {
+  folderName: String
+  subscriptions: [SubscriptionInput]
+}
+
+type Setting {
+  _id: String
+  userId: String
+  folders: [Folder]
+  interval: String
+}
+
+input SettingInput {
+  _id: String
+  userId: String
+  folders: [FolderInput]
+  interval: String
+}
+
+extend type Query {
+  settings: Setting
+}
+
+extend type Mutation {
+  updateSetting(setting: SettingInput!): Setting
+}
