@@ -29,8 +29,12 @@ if (Meteor.isServer) {
   describe('Settings query', () => {
     it('returns no settings if no data found for user', async () => {
       resetDatabase();
+      const userId = Accounts.createUser({
+        username: 'testuser',
+        password: 'example123',
+      });
       const { server } = constructTestServer({
-        context: () => ({ user: { _id: 1, username: 'testuser', admin: false } }),
+        context: () => ({ user: { _id: userId, username: 'testuser', admin: false } }),
       });
       const { query } = createTestClient(server);
       const res = await query({ query: SETTINGS_QUERY });
@@ -44,7 +48,6 @@ if (Meteor.isServer) {
       const url = 'http://mynews.rss';
       const userId = Accounts.createUser({
         username: 'testuser',
-        admin: false,
         password: 'example123',
       });
 
@@ -75,13 +78,44 @@ if (Meteor.isServer) {
   });
 
   describe('Update settings mutation', () => {
+    it('throws error if user not found', async () => {
+      resetDatabase();
+      Accounts.createUser({
+        username: 'testuser',
+        password: 'example123',
+      });
+      const { server } = constructTestServer({
+        context: () => ({ user: { _id: '1', username: 'testuser', admin: false } }),
+      });
+
+      const folderName = 'foonews';
+      const url = 'http://mynews.rss';
+      const setting = {
+        interval: '60',
+        folders: [
+          {
+            folderName,
+            subscriptions: [
+              {
+                url,
+              },
+            ],
+          },
+        ],
+      };
+
+      const { mutate } = createTestClient(server);
+      const res = await mutate({ mutation: UPDATE_SETTINGS_MUTATION, variables: { setting } });
+      assert.equal(res.errors[0].message, 'not authorized');
+      assert.equal(res.errors[0].path[0], 'updateSetting');
+    });
+
     it('creates settings if no data found for user', async () => {
       resetDatabase();
       const folderName = 'foonews';
       const url = 'http://mynews.rss';
       const userId = Accounts.createUser({
         username: 'testuser',
-        admin: false,
         password: 'example123',
       });
       const { server } = constructTestServer({
@@ -105,6 +139,73 @@ if (Meteor.isServer) {
       const { mutate } = createTestClient(server);
       const res = await mutate({ mutation: UPDATE_SETTINGS_MUTATION, variables: { setting } });
       assert.notEqual(res.data.updateSetting, null);
+      assert.equal(res.data.updateSetting.folders[0].folderName, folderName);
+      assert.equal(res.data.updateSetting.folders[0].subscriptions[0].url, url);
+      assert.equal(res.data.updateSetting.interval, '60');
+    });
+
+    it('updates settings if data found for user', async () => {
+      resetDatabase();
+      const folderName = 'foonews';
+      const url = 'http://mynews.rss';
+      const userId = Accounts.createUser({
+        username: 'testuser',
+        password: 'example123',
+      });
+      const { server } = constructTestServer({
+        context: () => ({ user: { _id: userId, username: 'testuser', admin: false } }),
+      });
+
+      const setting = {
+        interval: '60',
+        folders: [
+          {
+            folderName,
+            subscriptions: [
+              {
+                url,
+              },
+            ],
+          },
+        ],
+      };
+
+      const updateSetting = {
+        interval: '30',
+        folders: [
+          {
+            folderName,
+            subscriptions: [
+              {
+                url,
+              },
+              {
+                url: 'http://otherfeed.rss',
+              },
+            ],
+          },
+          {
+            folderName: 'folder2',
+            subscriptions: [
+              {
+                url: 'http://thirdfeed.rss',
+              },
+            ],
+          },
+        ],
+      };
+
+      Settings.insert({ userId, ...setting });
+
+      const { mutate } = createTestClient(server);
+      const res = await mutate({ mutation: UPDATE_SETTINGS_MUTATION, variables: { setting: updateSetting } });
+      assert.notEqual(res.data.updateSetting, null);
+      assert.equal(res.data.updateSetting.folders[0].folderName, folderName);
+      assert.equal(res.data.updateSetting.folders[0].subscriptions[0].url, url);
+      assert.equal(res.data.updateSetting.folders[0].subscriptions[1].url, 'http://otherfeed.rss');
+      assert.equal(res.data.updateSetting.interval, '30');
+      assert.equal(res.data.updateSetting.folders[1].folderName, 'folder2');
+      assert.equal(res.data.updateSetting.folders[1].subscriptions[0].url, 'http://thirdfeed.rss');
     });
   });
 }

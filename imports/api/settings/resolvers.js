@@ -35,5 +35,20 @@ export default {
       }
     },
   },
-  // TODO: mutation
+  Mutation: {
+    updateSetting(_, args, context) {
+      const interval = args.setting.interval || '60';
+      const folders = args.setting.folders || [];
+      const user = context.user;
+      logger.log({ level: 'info', message: `got updateSettings request from _id ${user && user._id}` });
+      const foundUser = user && Meteor.users.findOne(user._id);
+      if (!foundUser) {
+        logger.log({ level: 'warn', message: `update settings requester with ${user._id} is no user` });
+        throw new Error('not authorized');
+      }
+      Settings.upsert({ userId: user._id }, { $set: { interval, folders } });
+      logger.log({ level: 'info', message: `updated settings for user with _id ${user._id}` });
+      return Settings.findOne({ userId: user._id });
+    },
+  },
 };
