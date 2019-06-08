@@ -49,6 +49,11 @@ const handleLogin = (history, setLoading) => {
   history.push('/login');
 };
 
+const handleSettings = (history, setLoading) => {
+  setLoading(true);
+  history.push('/settings');
+};
+
 const Navbar = (props) => {
   const { classes, history } = props;
   const { setLoading } = useContext(LoadingContext);
@@ -76,6 +81,11 @@ const Navbar = (props) => {
                 {currentUser && currentUser.admin ? (
                   <Button name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
                     Users
+                  </Button>
+                ) : null}
+                {currentUser && currentUser._id ? (
+                  <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history, setLoading)}>
+                    Settings
                   </Button>
                 ) : null}
                 {currentUser && currentUser._id ? (

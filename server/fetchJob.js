@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import { pluck } from 'lodash';
+import map from 'lodash/map';
 import { Settings } from '../imports/api/settings/constants';
 import { Messages } from '../imports/api/messages/constants';
 
@@ -72,7 +72,7 @@ const cleanMessages = (setting, user) => {
 
 const markMessages = (setting, user) => {
   logger.log({ level: 'info', message: `running mark messages job for user ${user.username} with id ${user._id}` });
-  const markedMessagesIds = pluck(Messages.find({ userId: user._id, isMarkedRead: true, isRead: false }).fetch(), '_id');
+  const markedMessagesIds = map(Messages.find({ userId: user._id, isMarkedRead: true, isRead: false }).fetch(), '_id');
   Messages.update({ _id: { $in: markedMessagesIds } }, { $set: { isRead: true } }, { multi: true });
 };
 

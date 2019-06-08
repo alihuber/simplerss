@@ -1,5 +1,4 @@
 /* global window, location */
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { spring, AnimatedSwitch } from 'react-router-transition';
@@ -10,6 +9,7 @@ import HomePage from './HomePage.js';
 import Login from './Login.js';
 import NotFoundPage from './NotFoundPage';
 import Users from './admin/Users';
+import Settings from './Settings';
 
 export const history = createBrowserHistory();
 
@@ -18,6 +18,7 @@ export const appRoutes = () => {
   routes.push({ path: '/', component: HomePage });
   routes.push({ path: '/login', component: Login });
   routes.push({ path: '/users', component: Users });
+  routes.push({ path: '/settings', component: Settings });
   routes.push({ component: NotFoundPage });
   return routes;
 };
