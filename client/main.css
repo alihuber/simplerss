@@ -33,3 +33,9 @@
   background: #ffffff;
   color: #666666;
 }
+
+@media (max-device-width: 860px) {
+  .container-fluid {
+    padding: 0px !important;
+  }
+}

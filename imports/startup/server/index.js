@@ -4,11 +4,15 @@ import { Accounts } from 'meteor/accounts-base';
 import { ApolloServer } from 'apollo-server-express';
 import { WebApp } from 'meteor/webapp';
 import { getUser } from 'meteor/apollo';
+import { GraphQLScalarType } from 'graphql';
+import { Kind } from 'graphql/language';
 import merge from 'lodash/merge';
 import UserSchema from '../../api/users/User.graphql';
 import UserResolver from '../../api/users/resolvers';
 import SettingSchema from '../../api/settings/Setting.graphql';
 import SettingResolver from '../../api/settings/resolvers';
+import MessageSchema from '../../api/messages/Message.graphql';
+import MessageResolver from '../../api/messages/resolvers';
 
 import FetchJob from '../../../server/fetchJob';
 
@@ -26,9 +30,27 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-const typeDefs = [UserSchema, SettingSchema];
+const typeDefs = [UserSchema, SettingSchema, MessageSchema];
+const DateResolver = {
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    description: 'Date custom scalar type',
+    parseValue(value) {
+      return new Date(value); // value from the client
+    },
+    serialize(value) {
+      return value.getTime(); // value sent to the client
+    },
+    parseLiteral(ast) {
+      if (ast.kind === Kind.INT) {
+        return new Date(ast.value); // ast value is always in string format
+      }
+      return null;
+    },
+  }),
+};
 
-const resolvers = merge(UserResolver, SettingResolver);
+const resolvers = merge(DateResolver, UserResolver, SettingResolver, MessageResolver);
 
 const server = new ApolloServer({
   typeDefs,

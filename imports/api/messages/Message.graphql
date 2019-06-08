@@ -1,0 +1,23 @@
+scalar Date
+
+type Message {
+  _id: String
+  folder: String
+  isRead: Boolean
+  isMarkedRead: Boolean
+  creator: String
+  title: String
+  link: String
+  pubDate: Date
+  content: String
+  contentSnippet: String
+  guid: String
+}
+
+extend type Query {
+  messages: [Message]
+}
+
+extend type Mutation {
+  markAsRead(messageId: String!): Message
+}

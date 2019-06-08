@@ -10,6 +10,7 @@ import Login from './Login.js';
 import NotFoundPage from './NotFoundPage';
 import Users from './admin/Users';
 import Settings from './Settings';
+import Messages from './Messages';
 
 export const history = createBrowserHistory();
 
@@ -19,6 +20,7 @@ export const appRoutes = () => {
   routes.push({ path: '/login', component: Login });
   routes.push({ path: '/users', component: Users });
   routes.push({ path: '/settings', component: Settings });
+  routes.push({ path: '/messages', component: Messages });
   routes.push({ component: NotFoundPage });
   return routes;
 };

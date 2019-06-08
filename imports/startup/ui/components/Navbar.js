@@ -6,6 +6,10 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import PeopleIcon from '@material-ui/icons/People';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import SettingsIcon from '@material-ui/icons/Settings';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import Button from '@material-ui/core/Button';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import LoadingContext from '../contexts/LoadingContext';
@@ -17,10 +21,6 @@ const styles = {
   flex: {
     flexGrow: 1,
     cursor: 'pointer',
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
   },
 };
 
@@ -54,12 +54,17 @@ const handleSettings = (history, setLoading) => {
   history.push('/settings');
 };
 
+const handleMessages = (history, setLoading) => {
+  setLoading(true);
+  history.push('/messages');
+};
+
 const Navbar = (props) => {
-  const { classes, history } = props;
+  const { classes, history, isMobile } = props;
   const { setLoading } = useContext(LoadingContext);
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position={isMobile ? 'fixed' : 'static'}>
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history, setLoading)}>
             Home
@@ -74,23 +79,28 @@ const Navbar = (props) => {
                 ) : null}
                 {currentUser && currentUser.username ? (
                   <Typography>
-                    Logged in as:&nbsp;
+                    User:&nbsp;
                     {currentUser.username}
                   </Typography>
                 ) : null}
                 {currentUser && currentUser.admin ? (
-                  <Button name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
-                    Users
+                  <Button size="small" name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
+                    <PeopleIcon />
+                  </Button>
+                ) : null}
+                {currentUser && currentUser._id ? (
+                  <Button size="small" name="messagesButton" color="inherit" onClick={() => handleMessages(history, setLoading)}>
+                    <MailOutlineIcon />
                   </Button>
                 ) : null}
                 {currentUser && currentUser._id ? (
                   <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history, setLoading)}>
-                    Settings
+                    <SettingsIcon />
                   </Button>
                 ) : null}
                 {currentUser && currentUser._id ? (
                   <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history, setLoading)}>
-                    Logout
+                    <DirectionsRunIcon />
                   </Button>
                 ) : null}
               </React.Fragment>
@@ -105,6 +115,7 @@ const Navbar = (props) => {
 Navbar.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  isMobile: PropTypes.bool,
 };
 
 export default withStyles(styles)(Navbar);
