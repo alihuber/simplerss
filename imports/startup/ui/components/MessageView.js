@@ -13,7 +13,7 @@ const styles = () => ({
 const MessageView = ({ classes, message, isMobile }) => {
   if (isMobile) {
     return (
-      <div position="fixed">
+      <>
         <Typography variant="h5" gutterBottom>
           {message.title}
         </Typography>
@@ -27,26 +27,30 @@ const MessageView = ({ classes, message, isMobile }) => {
           {' '}
           {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
         </Typography>
-        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
-      </div>
+        <Typography variant="body1">
+          <div dangerouslySetInnerHTML={{ __html: message.content }} />
+        </Typography>
+      </>
     );
   } else {
     return (
       <>
-        <Typography variant="h2" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           {message.title}
         </Typography>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom>
           From:
           {' '}
           {message.creator}
         </Typography>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom>
           Date:
           {' '}
           {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
         </Typography>
-        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
+        <Typography variant="body1">
+          <div dangerouslySetInnerHTML={{ __html: message.content }} />
+        </Typography>
       </>
     );
   }
