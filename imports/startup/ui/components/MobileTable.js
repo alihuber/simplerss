@@ -59,14 +59,23 @@ const MobileTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
           {messages.map((message) => {
             if (message._id === selectedMessageId) {
               return (
-                <TableRow className={classes.selectedRow} name="scrollToRow" key={message._id}>
+                <TableRow
+                  className={classes.selectedRow}
+                  name="scrollToRow"
+                  key={message._id}
+                  onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
+                >
                   <CustomTableCell>{message.title}</CustomTableCell>
                   <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
                 </TableRow>
               );
             } else if (message.isMarkedRead) {
               return (
-                <TableRow className={classes.row} key={message._id}>
+                <TableRow
+                  className={classes.row}
+                  key={message._id}
+                  onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
+                >
                   <CustomTableCell>{message.title}</CustomTableCell>
                   <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
                 </TableRow>

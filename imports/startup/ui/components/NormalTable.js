@@ -58,7 +58,12 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
           {messages.map((message) => {
             if (message._id === selectedMessageId) {
               return (
-                <TableRow className={classes.selectedRow} key={message._id} name="scrollToRow">
+                <TableRow
+                  className={classes.selectedRow}
+                  key={message._id}
+                  name="scrollToRow"
+                  onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
+                >
                   <CustomTableCell>{message.title}</CustomTableCell>
                   <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
                   <CustomTableCell>{message.creator}</CustomTableCell>
@@ -66,7 +71,11 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
               );
             } else if (message.isMarkedRead) {
               return (
-                <TableRow className={classes.row} key={message._id}>
+                <TableRow
+                  className={classes.row}
+                  key={message._id}
+                  onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
+                >
                   <CustomTableCell>{message.title}</CustomTableCell>
                   <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
                   <CustomTableCell>{message.creator}</CustomTableCell>
