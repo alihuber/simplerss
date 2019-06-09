@@ -1,8 +1,10 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
+import { link } from 'fs';
 
 const styles = () => ({
   content: {
@@ -15,7 +17,9 @@ const MessageView = ({ classes, message, isMobile }) => {
     return (
       <>
         <Typography variant="h5" gutterBottom>
-          {message.title}
+          <a href={message.link} target="_blank">
+            {message.title}
+          </a>
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           From:
@@ -34,7 +38,9 @@ const MessageView = ({ classes, message, isMobile }) => {
     return (
       <>
         <Typography variant="h4" gutterBottom>
-          {message.title}
+          <a href={message.link} target="_blank">
+            {message.title}
+          </a>
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           From:

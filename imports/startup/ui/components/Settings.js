@@ -33,7 +33,8 @@ const settingsSchema = new SimpleSchema({
 });
 
 const handleSubmit = (values, updateSettings, refetch) => {
-  const { interval, folders } = values;
+  const cleaned = settingsSchema.clean(values);
+  const { interval, folders } = cleaned;
   updateSettings({ variables: { setting: { interval, folders } } })
     .then(() => {
       refetch();

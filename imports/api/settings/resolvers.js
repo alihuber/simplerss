@@ -46,7 +46,7 @@ export default {
         logger.log({ level: 'warn', message: `update settings requester with ${user._id} is no user` });
         throw new Error('not authorized');
       }
-      Settings.upsert({ userId: user._id }, { $set: { interval, folders } });
+      Settings.upsert({ userId: user._id }, { $set: { interval, folders, nextEvent: new Date() } });
       logger.log({ level: 'info', message: `updated settings for user with _id ${user._id}` });
       return Settings.findOne({ userId: user._id });
     },

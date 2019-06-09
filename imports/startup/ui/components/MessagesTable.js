@@ -33,7 +33,7 @@ const styles = theme => ({
   },
   itemTop: {
     overflowY: 'auto',
-    maxHeight: '46vh',
+    maxHeight: '60vh',
   },
   itemLeftSide: {
     overflowY: 'auto',
@@ -55,6 +55,20 @@ const styles = theme => ({
     position: 'fixed',
     right: 0,
     bottom: 85,
+    zIndex: 100,
+  },
+  mobileFabDown: {
+    margin: theme.spacing.unit * 2,
+    position: 'absolute',
+    right: 0,
+    top: 300,
+    zIndex: 100,
+  },
+  mobileFabUp: {
+    margin: theme.spacing.unit * 2,
+    position: 'absolute',
+    right: 0,
+    top: 190,
     zIndex: 100,
   },
 });
@@ -112,7 +126,13 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
       <div className={classes.parent}>
         <div className={classes.itemTop} id="messagesTable">
           <Paper>
-            <MobileTable messages={messages} classes={classes} selectedMessageId={selectedMessage._id} />
+            <MobileTable
+              messages={messages}
+              classes={classes}
+              selectedMessageId={selectedMessage._id}
+              setSelectedMessage={setSelectedMessage}
+              markMessageAsRead={markMessageAsRead}
+            />
           </Paper>
         </div>
         <Paper>

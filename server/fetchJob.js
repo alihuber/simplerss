@@ -29,12 +29,20 @@ const parseMessages = (setting) => {
             (res) => {
               if (res.items.length > 0) {
                 res.items.forEach((item) => {
+                  // if message is older than one week: don't save
+                  if (
+                    moment(item.pubDate)
+                      .clone()
+                      .isBefore(moment().subtract(7, 'days'))
+                  ) {
+                    return;
+                  }
                   // if title and date are already existent: don't save message again
-                  // TODO: if there is already one message from the same creator for this minute, dismiss
                   const foundMessage = Messages.findOne({ title: item.title, date: item.date });
                   if (foundMessage) {
                     return;
                   }
+                  // TODO: if there is already one message from the same creator for this minute, dismiss
                   const mess = { folder: folder.folderName, userId: setting.userId, isRead: false, isMarkedRead: false };
                   mess.creator = item.creator || item.author || res.title;
                   mess.date = item.date;
@@ -60,13 +68,25 @@ const parseMessages = (setting) => {
 
 const cleanMessages = (setting, user) => {
   logger.log({ level: 'info', message: `running clean messages job for user ${user.username} with id ${user._id}` });
-  Messages.remove({
+  const removed = Messages.remove({
     userId: setting.userId,
-    pubDate: {
-      $lte: moment()
-        .subtract(7, 'days')
-        .toDate(),
-    },
+    $or: [
+      {
+        pubDate: {
+          $lte: moment()
+            .subtract(7, 'days')
+            .toDate(),
+        },
+      },
+      {
+        isRead: true,
+        isMarkedRead: true,
+      },
+    ],
+  });
+  logger.log({
+    level: 'info',
+    message: `clean messages job for user ${user.username} with id ${user._id} done, removed ${removed} messages`,
   });
 };
 

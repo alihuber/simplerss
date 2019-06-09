@@ -91,7 +91,7 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
       </Table>
       <Fab
         color="primary"
-        aria-label="Add"
+        aria-label="Up"
         className={classes.fullFabUp}
         onClick={() => handleUpClick(selectedMessageId, messages, setSelectedMessage, markMessageAsRead)}
       >
@@ -99,7 +99,7 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
       </Fab>
       <Fab
         color="primary"
-        aria-label="Add"
+        aria-label="Down"
         className={classes.fullFabDown}
         onClick={() => handleDownClick(selectedMessageId, messages, setSelectedMessage, markMessageAsRead)}
       >
