@@ -1,8 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { StickyContainer, Sticky } from 'react-sticky';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import { Paper } from '@material-ui/core';
 import last from 'lodash/last';
 import NormalTable from './NormalTable';
@@ -44,28 +43,49 @@ const styles = theme => ({
     maxWidth: '40vw',
     marginLeft: 20,
   },
+  fullFabDown: {
+    margin: theme.spacing.unit * 2,
+    position: 'fixed',
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+  },
+  fullFabUp: {
+    margin: theme.spacing.unit * 2,
+    position: 'fixed',
+    right: 0,
+    bottom: 85,
+    zIndex: 100,
+  },
 });
 
-const markAsRead = (values, markAsRead, refetch) => {
-  const { messageId } = values;
-  markAsRead({ variables: { messageId } })
-    .then(() => {
-      refetch();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
-const MessagesTable = ({ classes, messages }) => {
+const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
   const [width, setWidth] = useState(window.innerWidth);
   const [selectedMessage, setSelectedMessage] = useState(last(messages));
+
+  const markMessageAsRead = (values) => {
+    const { messageId } = values;
+    markAsRead({ variables: { messageId } })
+      .then(() => {
+        refetch();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   if (width > 860) {
     return (
       <StickyContainer>
         <div className={classes.fullParent}>
           <div className={classes.itemLeftSide} id="messagesTable">
-            <NormalTable messages={messages} classes={classes} selectedMessageId={selectedMessage._id} />
+            <NormalTable
+              messages={messages}
+              classes={classes}
+              selectedMessageId={selectedMessage._id}
+              setSelectedMessage={setSelectedMessage}
+              markMessageAsRead={markMessageAsRead}
+            />
           </div>
 
           <Sticky>
@@ -106,7 +126,8 @@ const MessagesTable = ({ classes, messages }) => {
 MessagesTable.propTypes = {
   classes: PropTypes.object.isRequired,
   messages: PropTypes.array.isRequired,
-  // refetch: PropTypes.func.isRequired,
+  refetch: PropTypes.func.isRequired,
+  markAsRead: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(MessagesTable);

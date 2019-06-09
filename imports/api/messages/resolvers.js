@@ -30,6 +30,11 @@ export default {
       const messageId = args.messageId;
       logger.log({ level: 'info', message: `got markAsRead request from _id ${reqUser && reqUser._id}` });
       const foundUser = reqUser && Meteor.users.findOne(reqUser._id);
+      const foundMessage = Messages.findOne(messageId);
+      if (!foundMessage) {
+        logger.log({ level: 'warn', message: `message with ${messageId} not found` });
+        throw new Error('not authorized');
+      }
       if (!foundUser) {
         logger.log({ level: 'warn', message: `markAsRead requester with ${reqUser._id} is no user` });
         throw new Error('not authorized');
