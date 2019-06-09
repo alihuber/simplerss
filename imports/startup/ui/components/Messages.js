@@ -13,31 +13,29 @@ const Messages = () => {
   }
 
   return (
-    <>
-      <CurrentUserContext.Consumer>
-        {currentUser => (currentUser ? (
-          <>
-            <Query query={MESSAGES_QUERY}>
-              {({ data, refetch }) => {
-                if (data && data.messages) {
-                  const { messages } = data;
-                  return (
-                    <Mutation mutation={MARK_AS_READ_MUTATION}>
-                      {(markAsRead) => {
-                        return <MessagesTable messages={messages} markAsRead={markAsRead} refetch={refetch} />;
-                      }}
-                    </Mutation>
-                  );
-                } else {
-                  return <CircularProgress />;
-                }
-              }}
-            </Query>
-          </>
-        ) : null)
-        }
-      </CurrentUserContext.Consumer>
-    </>
+    <CurrentUserContext.Consumer>
+      {currentUser => (currentUser ? (
+        <>
+          <Query query={MESSAGES_QUERY}>
+            {({ data, refetch }) => {
+              if (data && data.messages) {
+                const { messages } = data;
+                return (
+                  <Mutation mutation={MARK_AS_READ_MUTATION}>
+                    {(markAsRead) => {
+                      return <MessagesTable messages={messages} markAsRead={markAsRead} refetch={refetch} />;
+                    }}
+                  </Mutation>
+                );
+              } else {
+                return <CircularProgress />;
+              }
+            }}
+          </Query>
+        </>
+      ) : null)
+      }
+    </CurrentUserContext.Consumer>
   );
 };
 

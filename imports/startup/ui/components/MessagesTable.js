@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
+import { StickyContainer, Sticky } from 'react-sticky';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { Paper } from '@material-ui/core';
+import last from 'lodash/last';
 import NormalTable from './NormalTable';
 import MobileTable from './MobileTable';
 import MessageView from './MessageView';
@@ -17,15 +19,30 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.default,
     },
   },
+  selectedRow: {
+    backgroundColor: 'beige',
+  },
   mobileTable: {
     padding: 0,
   },
   parent: {
     flexDirection: 'column-reverse',
   },
+  fullParent: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   itemTop: {
     overflowY: 'auto',
     maxHeight: '46vh',
+  },
+  itemLeftSide: {
+    overflowY: 'auto',
+    maxWidth: '60vw',
+  },
+  itemRightSide: {
+    maxWidth: '40vw',
+    marginLeft: 20,
   },
 });
 
@@ -42,29 +59,44 @@ const markAsRead = (values, markAsRead, refetch) => {
 
 const MessagesTable = ({ classes, messages }) => {
   const [width, setWidth] = useState(window.innerWidth);
+  const [selectedMessage, setSelectedMessage] = useState(last(messages));
   if (width > 860) {
     return (
-      <Grid fluid>
-        <Row>
-          <Col xs={12} sm={12} md={8} lg={8}>
-            <NormalTable messages={messages} classes={classes} />
-          </Col>
-          <Col xs={12} sm={12} md={4} lg={4}>
-            <MessageView message={messages[0]} isMobile={false} />
-          </Col>
-        </Row>
-      </Grid>
+      <StickyContainer>
+        <div className={classes.fullParent}>
+          <div className={classes.itemLeftSide} id="messagesTable">
+            <NormalTable messages={messages} classes={classes} selectedMessageId={selectedMessage._id} />
+          </div>
+
+          <Sticky>
+            {({ style }) => {
+              const styleBefore = {
+                maxWidth: '40vw',
+                marginLeft: 20,
+                width: '40vw',
+                paddingRight: 60,
+              };
+              const mergedStyle = { ...style, ...styleBefore };
+              return (
+                <div className={classes.itemRightSide} style={mergedStyle}>
+                  <MessageView message={selectedMessage} isMobile={false} />
+                </div>
+              );
+            }}
+          </Sticky>
+        </div>
+      </StickyContainer>
     );
   } else {
     return (
       <div className={classes.parent}>
-        <div className={classes.itemTop}>
+        <div className={classes.itemTop} id="messagesTable">
           <Paper>
-            <MobileTable messages={messages} classes={classes} />
+            <MobileTable messages={messages} classes={classes} selectedMessageId={selectedMessage._id} />
           </Paper>
         </div>
         <Paper>
-          <MessageView message={messages[0]} isMobile />
+          <MessageView message={selectedMessage} isMobile />
         </Paper>
       </div>
     );

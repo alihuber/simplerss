@@ -27,9 +27,7 @@ const MessageView = ({ classes, message, isMobile }) => {
           {' '}
           {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
         </Typography>
-        <Typography variant="body1">
-          <div dangerouslySetInnerHTML={{ __html: message.content }} />
-        </Typography>
+        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
       </>
     );
   } else {
@@ -48,9 +46,7 @@ const MessageView = ({ classes, message, isMobile }) => {
           {' '}
           {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
         </Typography>
-        <Typography variant="body1">
-          <div dangerouslySetInnerHTML={{ __html: message.content }} />
-        </Typography>
+        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
       </>
     );
   }
