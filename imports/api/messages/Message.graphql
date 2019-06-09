@@ -20,4 +20,5 @@ extend type Query {
 
 extend type Mutation {
   markAsRead(messageId: String!): Message
+  markAllAsRead: Boolean
 }

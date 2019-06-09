@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Query, Mutation } from 'react-apollo';
@@ -16,6 +17,12 @@ const subscriptionSchema = new SimpleSchema({
     required: true,
   },
 });
+
+const styles = {
+  root: {
+    paddingTop: 60,
+  },
+};
 
 const settingsSchema = new SimpleSchema({
   interval: {
@@ -50,13 +57,13 @@ const handleSubmit = (values, updateSettings, refetch) => {
     });
 };
 
-const Settings = () => {
+const Settings = ({ classes }) => {
   const { loading, setLoading } = useContext(LoadingContext);
   if (loading) {
     setLoading(false);
   }
   return (
-    <>
+    <div className={classes.root}>
       <Typography variant="h3" gutterBottom>
         Settings
       </Typography>
@@ -92,8 +99,12 @@ const Settings = () => {
         ) : null)
         }
       </CurrentUserContext.Consumer>
-    </>
+    </div>
   );
 };
 
-export default Settings;
+Settings.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Settings);

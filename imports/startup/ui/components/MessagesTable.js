@@ -9,6 +9,9 @@ import MobileTable from './MobileTable';
 import MessageView from './MessageView';
 
 const styles = theme => ({
+  navPadding: {
+    paddingTop: 60,
+  },
   root: {
     width: '100%',
     overflowX: 'auto',
@@ -43,11 +46,11 @@ const styles = theme => ({
     maxWidth: '40vw',
     marginLeft: 20,
   },
-  fullFabDown: {
+  fullFabAll: {
     margin: theme.spacing.unit * 2,
     position: 'fixed',
     right: 0,
-    bottom: 0,
+    bottom: 170,
     zIndex: 100,
   },
   fullFabUp: {
@@ -57,11 +60,18 @@ const styles = theme => ({
     bottom: 85,
     zIndex: 100,
   },
-  mobileFabDown: {
+  fullFabDown: {
+    margin: theme.spacing.unit * 2,
+    position: 'fixed',
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+  },
+  mobileFabAll: {
     margin: theme.spacing.unit * 2,
     position: 'absolute',
     right: 0,
-    top: 300,
+    top: 80,
     zIndex: 100,
   },
   mobileFabUp: {
@@ -71,9 +81,16 @@ const styles = theme => ({
     top: 190,
     zIndex: 100,
   },
+  mobileFabDown: {
+    margin: theme.spacing.unit * 2,
+    position: 'absolute',
+    right: 0,
+    top: 300,
+    zIndex: 100,
+  },
 });
 
-const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
+const MessagesTable = ({ classes, messages, refetch, markAsRead, markAllAsRead }) => {
   const [width, setWidth] = useState(window.innerWidth);
   const [selectedMessage, setSelectedMessage] = useState(last(messages));
 
@@ -88,38 +105,52 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
       });
   };
 
+  const markAllMessagesAsRead = () => {
+    markAllAsRead()
+      .then(() => {
+        refetch();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   if (width > 860) {
     return (
-      <StickyContainer>
-        <div className={classes.fullParent}>
-          <div className={classes.itemLeftSide} id="messagesTable">
-            <NormalTable
-              messages={messages}
-              classes={classes}
-              selectedMessageId={selectedMessage && selectedMessage._id}
-              setSelectedMessage={setSelectedMessage}
-              markMessageAsRead={markMessageAsRead}
-            />
-          </div>
+      <div className={classes.navPadding}>
+        <StickyContainer>
+          <div className={classes.fullParent}>
+            <div className={classes.itemLeftSide} id="messagesTable">
+              <NormalTable
+                messages={messages}
+                classes={classes}
+                selectedMessageId={selectedMessage && selectedMessage._id}
+                setSelectedMessage={setSelectedMessage}
+                markMessageAsRead={markMessageAsRead}
+                markAllMessagesAsRead={markAllMessagesAsRead}
+              />
+            </div>
 
-          <Sticky>
-            {({ style }) => {
-              const styleBefore = {
-                maxWidth: '40vw',
-                marginLeft: 20,
-                width: '40vw',
-                paddingRight: 60,
-              };
-              const mergedStyle = { ...style, ...styleBefore };
-              return (
-                <div className={classes.itemRightSide} style={mergedStyle}>
-                  <MessageView message={selectedMessage} isMobile={false} />
-                </div>
-              );
-            }}
-          </Sticky>
-        </div>
-      </StickyContainer>
+            <Sticky>
+              {({ style }) => {
+                const styleBefore = {
+                  maxWidth: '40vw',
+                  marginLeft: 20,
+                  width: '40vw',
+                  paddingRight: 60,
+                  top: 70,
+                };
+                const mergedStyle = { ...style, ...styleBefore };
+                return (
+                  <div className={classes.itemRightSide} style={mergedStyle}>
+                    <MessageView message={selectedMessage} isMobile={false} />
+                  </div>
+                );
+              }}
+            </Sticky>
+          </div>
+        </StickyContainer>
+      </div>
     );
   } else {
     return (
@@ -132,6 +163,7 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
               selectedMessageId={selectedMessage._id}
               setSelectedMessage={setSelectedMessage}
               markMessageAsRead={markMessageAsRead}
+              markAllMessagesAsRead={markAllMessagesAsRead}
             />
           </Paper>
         </div>
@@ -148,6 +180,7 @@ MessagesTable.propTypes = {
   messages: PropTypes.array.isRequired,
   refetch: PropTypes.func.isRequired,
   markAsRead: PropTypes.func.isRequired,
+  markAllAsRead: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(MessagesTable);

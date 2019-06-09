@@ -8,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Fab from '@material-ui/core/Fab';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import CheckIcon from '@material-ui/icons/Check';
 import moment from 'moment';
 import { scroller } from 'react-scroll';
 
@@ -36,7 +37,11 @@ const handleUpClick = (selectedMessageId, messages, setSelectedMessage, markMess
   markMessageAsRead({ messageId: selectedMessageId });
 };
 
-const MobileTable = ({ messages, classes, selectedMessageId, setSelectedMessage, markMessageAsRead }) => {
+const handleMarkAllClick = (markAllMessagesAsRead) => {
+  markAllMessagesAsRead();
+};
+
+const MobileTable = ({ messages, classes, selectedMessageId, setSelectedMessage, markMessageAsRead, markAllMessagesAsRead }) => {
   useEffect(() => {
     scroller.scrollTo('scrollToRow', {
       duration: 1500,
@@ -85,6 +90,9 @@ const MobileTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
           })}
         </TableBody>
       </Table>
+      <Fab color="primary" aria-label="All" className={classes.mobileFabAll} onClick={() => handleMarkAllClick(markAllMessagesAsRead)}>
+        <CheckIcon />
+      </Fab>
       <Fab
         color="primary"
         aria-label="Up"
@@ -113,6 +121,7 @@ MobileTable.propTypes = {
   selectedMessageId: PropTypes.string,
   setSelectedMessage: PropTypes.func.isRequired,
   markMessageAsRead: PropTypes.func.isRequired,
+  markAllMessagesAsRead: PropTypes.func.isRequired,
 };
 
 export default MobileTable;

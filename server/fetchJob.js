@@ -70,19 +70,11 @@ const cleanMessages = (setting, user) => {
   logger.log({ level: 'info', message: `running clean messages job for user ${user.username} with id ${user._id}` });
   const removed = Messages.remove({
     userId: setting.userId,
-    $or: [
-      {
-        pubDate: {
-          $lte: moment()
-            .subtract(7, 'days')
-            .toDate(),
-        },
-      },
-      {
-        isRead: true,
-        isMarkedRead: true,
-      },
-    ],
+    pubDate: {
+      $lte: moment()
+        .subtract(7, 'days')
+        .toDate(),
+    },
   });
   logger.log({
     level: 'info',

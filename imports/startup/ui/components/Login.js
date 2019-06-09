@@ -21,7 +21,7 @@ const styles = theme => ({
     textAlign: 'left',
   },
   root: {
-    flexGrow: 1,
+    paddingTop: 60,
   },
   control: {
     padding: theme.spacing.unit * 2,
@@ -74,7 +74,7 @@ const Login = ({ classes, routeProps }) => {
     setLoading(false);
   }
   return (
-    <Grid fluid>
+    <Grid fluid className={classes.root}>
       <Row center="xs">
         <Col xs={12} sm={12} md={6} lg={6}>
           <Paper className={classes.paper}>

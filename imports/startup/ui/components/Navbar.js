@@ -64,7 +64,7 @@ const Navbar = (props) => {
   const { setLoading } = useContext(LoadingContext);
   return (
     <div className={classes.root}>
-      <AppBar position={isMobile ? 'fixed' : 'static'}>
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history, setLoading)}>
             Home

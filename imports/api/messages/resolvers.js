@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import moment from 'moment';
 import { Messages } from './constants';
 
 const { createLogger, transports, format } = require('winston');
@@ -21,7 +22,15 @@ export default {
       logger.log({ level: 'info', message: `got messages request for _id ${reqUser && reqUser._id}` });
       const user = reqUser && Meteor.users.findOne(reqUser._id);
       logger.log({ level: 'info', message: `returning messages for _id ${user._id}` });
-      return Messages.find({ userId: user._id }, { sort: { pubDate: -1 } }).fetch();
+      return Messages.find({
+        userId: user._id,
+        isRead: false,
+        pubDate: {
+          $gte: moment()
+            .subtract(3, 'days')
+            .toDate(),
+        },
+      });
     },
   },
   Mutation: {
@@ -42,6 +51,18 @@ export default {
       Messages.update({ _id: messageId }, { $set: { isMarkedRead: true } });
       logger.log({ level: 'info', message: `marked message with _id ${messageId} as read` });
       return Messages.findOne(messageId);
+    },
+    markAllAsRead(_, args, context) {
+      const reqUser = context.user;
+      logger.log({ level: 'info', message: `got markAllAsRead request from _id ${reqUser && reqUser._id}` });
+      const foundUser = reqUser && Meteor.users.findOne(reqUser._id);
+      if (!foundUser) {
+        logger.log({ level: 'warn', message: `markAsRead requester with ${reqUser._id} is no user` });
+        throw new Error('not authorized');
+      }
+      Messages.update({ userId: foundUser._id }, { $set: { isMarkedRead: true } }, { multi: true });
+      logger.log({ level: 'info', message: `marked all messages for user with id ${foundUser._id} as read` });
+      return true;
     },
   },
 };

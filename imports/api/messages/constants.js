@@ -38,3 +38,9 @@ export const MARK_AS_READ_MUTATION = gql`
     }
   }
 `;
+
+export const MARK_ALL_AS_READ_MUTATION = gql`
+  mutation markAllAsRead {
+    markAllAsRead
+  }
+`;
