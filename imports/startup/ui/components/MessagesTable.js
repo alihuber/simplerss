@@ -96,7 +96,7 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead }) => {
             <NormalTable
               messages={messages}
               classes={classes}
-              selectedMessageId={selectedMessage._id}
+              selectedMessageId={selectedMessage && selectedMessage._id}
               setSelectedMessage={setSelectedMessage}
               markMessageAsRead={markMessageAsRead}
             />

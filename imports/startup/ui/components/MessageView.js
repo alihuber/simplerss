@@ -13,53 +13,57 @@ const styles = () => ({
 });
 
 const MessageView = ({ classes, message, isMobile }) => {
-  if (isMobile) {
-    return (
-      <>
-        <Typography variant="h5" gutterBottom>
-          <a href={message.link} target="_blank">
-            {message.title}
-          </a>
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          From:
-          {' '}
-          {message.creator}
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          Date:
-          {' '}
-          {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
-        </Typography>
-        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
-      </>
-    );
+  if (message) {
+    if (isMobile) {
+      return (
+        <>
+          <Typography variant="h5" gutterBottom>
+            <a href={message.link} target="_blank">
+              {message.title}
+            </a>
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            From:
+            {' '}
+            {message.creator}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Date:
+            {' '}
+            {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
+          </Typography>
+          <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Typography variant="h4" gutterBottom>
+            <a href={message.link} target="_blank">
+              {message.title}
+            </a>
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            From:
+            {' '}
+            {message.creator}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Date:
+            {' '}
+            {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
+          </Typography>
+          <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
+        </>
+      );
+    }
   } else {
-    return (
-      <>
-        <Typography variant="h4" gutterBottom>
-          <a href={message.link} target="_blank">
-            {message.title}
-          </a>
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          From:
-          {' '}
-          {message.creator}
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          Date:
-          {' '}
-          {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
-        </Typography>
-        <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
-      </>
-    );
+    return null;
   }
 };
 
 MessageView.propTypes = {
-  message: PropTypes.object.isRequired,
+  message: PropTypes.object,
   isMobile: PropTypes.bool.isRequired,
 };
 
