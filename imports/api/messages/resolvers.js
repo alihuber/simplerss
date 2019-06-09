@@ -22,15 +22,18 @@ export default {
       logger.log({ level: 'info', message: `got messages request for _id ${reqUser && reqUser._id}` });
       const user = reqUser && Meteor.users.findOne(reqUser._id);
       logger.log({ level: 'info', message: `returning messages for _id ${user._id}` });
-      return Messages.find({
-        userId: user._id,
-        isRead: false,
-        pubDate: {
-          $gte: moment()
-            .subtract(3, 'days')
-            .toDate(),
+      return Messages.find(
+        {
+          userId: user._id,
+          isRead: false,
+          pubDate: {
+            $gte: moment()
+              .subtract(3, 'days')
+              .toDate(),
+          },
         },
-      });
+        { sort: { pubDate: -1 } }
+      );
     },
   },
   Mutation: {
