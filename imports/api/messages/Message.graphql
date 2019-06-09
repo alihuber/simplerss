@@ -16,6 +16,7 @@ type Message {
 
 extend type Query {
   messages: [Message]
+  messageCount: Int
 }
 
 extend type Mutation {

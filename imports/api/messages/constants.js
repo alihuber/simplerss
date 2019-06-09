@@ -3,6 +3,12 @@ import gql from 'graphql-tag';
 
 export const Messages = new Mongo.Collection('messages');
 
+export const MESSAGE_COUNT_QUERY = gql`
+  query {
+    messageCount
+  }
+`;
+
 export const MESSAGES_QUERY = gql`
   query {
     messages {

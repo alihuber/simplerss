@@ -17,6 +17,18 @@ const logger = createLogger({
 
 export default {
   Query: {
+    messageCount(_, __, context) {
+      const reqUser = context.user;
+      if (reqUser) {
+        logger.log({ level: 'info', message: `got messages count request for _id ${reqUser && reqUser._id}` });
+        const user = reqUser && Meteor.users.findOne(reqUser._id);
+        logger.log({ level: 'info', message: `returning messages count for _id ${user._id}` });
+        return Messages.find({
+          userId: user._id,
+          isMarkedRead: false,
+        }).fetch().length;
+      }
+    },
     messages(_, __, context) {
       const reqUser = context.user;
       logger.log({ level: 'info', message: `got messages request for _id ${reqUser && reqUser._id}` });

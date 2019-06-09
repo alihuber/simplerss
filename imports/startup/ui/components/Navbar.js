@@ -1,10 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import React, { useContext } from 'react';
+import { Query } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
 import Typography from '@material-ui/core/Typography';
 import PeopleIcon from '@material-ui/icons/People';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
@@ -13,6 +16,7 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import Button from '@material-ui/core/Button';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import LoadingContext from '../contexts/LoadingContext';
+import { MESSAGE_COUNT_QUERY } from '../../../api/messages/constants';
 
 const styles = {
   root: {
@@ -60,62 +64,76 @@ const handleMessages = (history, setLoading) => {
 };
 
 const Navbar = (props) => {
-  const { classes, history, isMobile } = props;
+  const { classes, history } = props;
   const { setLoading } = useContext(LoadingContext);
   return (
-    <div className={classes.root}>
-      <AppBar position="fixed">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history, setLoading)}>
-            Home
-          </Typography>
-          <CurrentUserContext.Consumer>
-            {currentUser => (
-              <React.Fragment>
-                {!currentUser || !currentUser._id ? (
-                  <Button name="loginButton" color="inherit" onClick={() => handleLogin(history, setLoading)}>
-                    Login
-                  </Button>
-                ) : null}
-                {currentUser && currentUser.username ? (
-                  <Typography>
-                    User:&nbsp;
-                    {currentUser.username}
-                  </Typography>
-                ) : null}
-                {currentUser && currentUser.admin ? (
-                  <Button size="small" name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
-                    <PeopleIcon />
-                  </Button>
-                ) : null}
-                {currentUser && currentUser._id ? (
-                  <Button size="small" name="messagesButton" color="inherit" onClick={() => handleMessages(history, setLoading)}>
-                    <MailOutlineIcon />
-                  </Button>
-                ) : null}
-                {currentUser && currentUser._id ? (
-                  <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history, setLoading)}>
-                    <SettingsIcon />
-                  </Button>
-                ) : null}
-                {currentUser && currentUser._id ? (
-                  <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history, setLoading)}>
-                    <DirectionsRunIcon />
-                  </Button>
-                ) : null}
-              </React.Fragment>
-            )}
-          </CurrentUserContext.Consumer>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <Query query={MESSAGE_COUNT_QUERY} pollInterval={60000} fetchPolicy="no-cache">
+      {({ data }) => {
+        const { messageCount } = data || 0;
+        return (
+          <div className={classes.root}>
+            <AppBar position="fixed">
+              <Toolbar>
+                <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history, setLoading)}>
+                  Home
+                </Typography>
+                <CurrentUserContext.Consumer>
+                  {currentUser => (
+                    <React.Fragment>
+                      {!currentUser || !currentUser._id ? (
+                        <Button name="loginButton" color="inherit" onClick={() => handleLogin(history, setLoading)}>
+                          Login
+                        </Button>
+                      ) : null}
+                      {currentUser && currentUser.username ? (
+                        <Typography>
+                          User:&nbsp;
+                          {currentUser.username}
+                        </Typography>
+                      ) : null}
+                      {currentUser && currentUser.admin ? (
+                        <Button size="small" name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
+                          <PeopleIcon />
+                        </Button>
+                      ) : null}
+                      {currentUser && currentUser._id ? (
+                        <IconButton
+                          name="messagesButton"
+                          size="small"
+                          color="inherit"
+                          aria-label="unread messages"
+                          onClick={() => handleMessages(history, setLoading)}
+                        >
+                          <Badge badgeContent={messageCount} color="secondary">
+                            <MailOutlineIcon />
+                          </Badge>
+                        </IconButton>
+                      ) : null}
+                      {currentUser && currentUser._id ? (
+                        <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history, setLoading)}>
+                          <SettingsIcon />
+                        </Button>
+                      ) : null}
+                      {currentUser && currentUser._id ? (
+                        <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history, setLoading)}>
+                          <DirectionsRunIcon />
+                        </Button>
+                      ) : null}
+                    </React.Fragment>
+                  )}
+                </CurrentUserContext.Consumer>
+              </Toolbar>
+            </AppBar>
+          </div>
+        );
+      }}
+    </Query>
   );
 };
 
 Navbar.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  isMobile: PropTypes.bool,
 };
 
 export default withStyles(styles)(Navbar);
