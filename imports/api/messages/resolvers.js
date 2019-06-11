@@ -26,6 +26,11 @@ export default {
         return Messages.find({
           userId: user._id,
           isMarkedRead: false,
+          pubDate: {
+            $gte: moment()
+              .subtract(3, 'days')
+              .toDate(),
+          },
         }).fetch().length;
       }
     },

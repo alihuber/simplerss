@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -11,6 +11,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import CheckIcon from '@material-ui/icons/Check';
 import moment from 'moment';
 import { scroller } from 'react-scroll';
+import throttle from 'lodash/throttle';
 
 const CustomTableCell = withStyles(() => ({
   body: {
@@ -26,15 +27,19 @@ const handleMessageSelect = (message, setSelectedMessage, markMessageAsRead) => 
 const handleDownClick = (selectedMessageId, messages, setSelectedMessage, markMessageAsRead) => {
   const currIdx = messages.findIndex(m => m._id === selectedMessageId);
   const nextMessage = messages[currIdx + 1];
-  setSelectedMessage(nextMessage);
-  markMessageAsRead({ messageId: selectedMessageId });
+  if (nextMessage) {
+    setSelectedMessage(nextMessage);
+    markMessageAsRead({ messageId: selectedMessageId });
+  }
 };
 
 const handleUpClick = (selectedMessageId, messages, setSelectedMessage, markMessageAsRead) => {
   const currIdx = messages.findIndex(m => m._id === selectedMessageId);
   const nextMessage = messages[currIdx - 1];
-  setSelectedMessage(nextMessage);
-  markMessageAsRead({ messageId: selectedMessageId });
+  if (nextMessage) {
+    setSelectedMessage(nextMessage);
+    markMessageAsRead({ messageId: selectedMessageId });
+  }
 };
 
 const handleMarkAllClick = (markAllMessagesAsRead) => {
@@ -42,14 +47,16 @@ const handleMarkAllClick = (markAllMessagesAsRead) => {
 };
 
 const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage, markMessageAsRead, markAllMessagesAsRead }) => {
-  useEffect(() => {
+  const scrollToMsg = () => {
     scroller.scrollTo('scrollToRow', {
       duration: 1500,
       delay: 100,
       smooth: true,
       offset: -500, // Scrolls to element + 50 pixels down the page
     });
-  });
+  };
+  const throttledScroll = useRef(throttle(scrollToMsg, 2000, { trailng: true }));
+  useEffect(() => throttledScroll.current());
 
   return (
     <>
