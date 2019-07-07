@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { Query, Mutation } from 'react-apollo';
 import { toast } from 'react-toastify';
 import AutoForm from 'uniforms-material/AutoForm';
 import SimpleSchema from 'simpl-schema';
 import CurrentUserContext from '../contexts/CurrentUserContext';
+import Loading from './Loading';
 import { SETTINGS_QUERY, UPDATE_SETTINGS_MUTATION } from '../../../api/settings/constants';
 
 const subscriptionSchema = new SimpleSchema({
@@ -66,7 +66,10 @@ const Settings = ({ classes }) => {
         {currentUser => (currentUser ? (
           <>
             <Query query={SETTINGS_QUERY}>
-              {({ data, refetch }) => {
+              {({ data, refetch, loading }) => {
+                if (loading) {
+                  return <Loading />;
+                }
                 if (data && data.settings) {
                   const { settings } = data;
                   return (
@@ -86,7 +89,7 @@ const Settings = ({ classes }) => {
                     </Mutation>
                   );
                 } else {
-                  return <CircularProgress />;
+                  return <Loading />;
                 }
               }}
             </Query>

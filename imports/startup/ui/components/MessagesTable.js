@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StickyContainer, Sticky } from 'react-sticky';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import last from 'lodash/last';
 import NormalTable from './NormalTable';
 import MobileTable from './MobileTable';
@@ -71,21 +71,21 @@ const styles = theme => ({
     margin: theme.spacing.unit * 2,
     position: 'absolute',
     right: 0,
-    top: 80,
+    top: 100,
     zIndex: 100,
   },
   mobileFabUp: {
     margin: theme.spacing.unit * 2,
     position: 'absolute',
     right: 0,
-    top: 190,
+    top: 210,
     zIndex: 100,
   },
   mobileFabDown: {
     margin: theme.spacing.unit * 2,
     position: 'absolute',
     right: 0,
-    top: 300,
+    top: 320,
     zIndex: 100,
   },
 });
@@ -96,7 +96,17 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead, markAllAsRead }
 
   const markMessageAsRead = (values) => {
     const { messageId } = values;
-    markAsRead({ variables: { messageId } })
+    markAsRead({
+      variables: { messageId },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        markAsRead: {
+          _id: messageId,
+          __typename: 'Message',
+          isMarkedAsRead: true,
+        },
+      },
+    })
       .then(() => {
         refetch();
       })
@@ -114,6 +124,14 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead, markAllAsRead }
         console.log(error);
       });
   };
+
+  if (messages.length === 0) {
+    return (
+      <div className={classes.navPadding}>
+        <Typography variant="body1">no messages yet</Typography>
+      </div>
+    );
+  }
 
   if (width > 860) {
     return (

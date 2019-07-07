@@ -59,7 +59,7 @@ const handleMessages = (history) => {
 const Navbar = (props) => {
   const { classes, history } = props;
   return (
-    <Query query={MESSAGE_COUNT_QUERY} pollInterval={60000} fetchPolicy="no-cache">
+    <Query query={MESSAGE_COUNT_QUERY} pollInterval={2000} fetchPolicy="no-cache">
       {({ data }) => {
         const { messageCount } = data || 0;
         return (
@@ -96,20 +96,32 @@ const Navbar = (props) => {
                           aria-label="unread messages"
                           onClick={() => handleMessages(history)}
                         >
-                          <Badge badgeContent={messageCount} color="secondary">
+                          <Badge badgeContent={messageCount} max={999} color="secondary">
                             <MailOutlineIcon />
                           </Badge>
                         </IconButton>
                       ) : null}
                       {currentUser && currentUser._id ? (
-                        <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history)}>
+                        <IconButton
+                          size="small"
+                          aria-label="settings"
+                          name="settingsButton"
+                          color="inherit"
+                          onClick={() => handleSettings(history)}
+                        >
                           <SettingsIcon />
-                        </Button>
+                        </IconButton>
                       ) : null}
                       {currentUser && currentUser._id ? (
-                        <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history)}>
+                        <IconButton
+                          size="small"
+                          aria-label="logout"
+                          name="logoutButton"
+                          color="inherit"
+                          onClick={() => handleLogout(history)}
+                        >
                           <DirectionsRunIcon />
-                        </Button>
+                        </IconButton>
                       ) : null}
                     </React.Fragment>
                   )}

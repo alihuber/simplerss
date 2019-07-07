@@ -31,6 +31,7 @@ export const MARK_AS_READ_MUTATION = gql`
   mutation markAsRead($messageId: String!) {
     markAsRead(messageId: $messageId) {
       _id
+      __typename
       folder
       isRead
       isMarkedRead

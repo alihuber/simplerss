@@ -49,14 +49,14 @@ const handleMarkAllClick = (markAllMessagesAsRead) => {
 const MobileTable = ({ messages, classes, selectedMessageId, setSelectedMessage, markMessageAsRead, markAllMessagesAsRead }) => {
   const scrollToMsg = () => {
     scroller.scrollTo('scrollToRow', {
-      duration: 1500,
+      duration: 500,
       delay: 100,
       smooth: true,
       containerId: 'messagesTable',
       offset: -250, // Scrolls to element + 50 pixels down the page
     });
   };
-  const throttledScroll = useRef(throttle(scrollToMsg, 2000, { trailng: true }));
+  const throttledScroll = useRef(throttle(scrollToMsg, 1000, { trailng: true }));
   useEffect(() => throttledScroll.current());
 
   return (
