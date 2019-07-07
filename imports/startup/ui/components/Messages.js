@@ -2,16 +2,10 @@ import React, { useContext } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Query, Mutation } from 'react-apollo';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import LoadingContext from '../contexts/LoadingContext';
 import { MESSAGES_QUERY, MARK_AS_READ_MUTATION, MARK_ALL_AS_READ_MUTATION } from '../../../api/messages/constants';
 import MessagesTable from './MessagesTable';
 
 const Messages = () => {
-  const { loading, setLoading } = useContext(LoadingContext);
-  if (loading) {
-    setLoading(false);
-  }
-
   return (
     <CurrentUserContext.Consumer>
       {currentUser => (currentUser ? (

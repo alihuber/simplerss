@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import AutoForm from 'uniforms-material/AutoForm';
 import SimpleSchema from 'simpl-schema';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import LoadingContext from '../contexts/LoadingContext';
 import { SETTINGS_QUERY, UPDATE_SETTINGS_MUTATION } from '../../../api/settings/constants';
 
 const subscriptionSchema = new SimpleSchema({
@@ -58,10 +57,6 @@ const handleSubmit = (values, updateSettings, refetch) => {
 };
 
 const Settings = ({ classes }) => {
-  const { loading, setLoading } = useContext(LoadingContext);
-  if (loading) {
-    setLoading(false);
-  }
   return (
     <div className={classes.root}>
       <Typography variant="h3" gutterBottom>

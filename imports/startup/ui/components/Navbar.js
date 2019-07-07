@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Query } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
@@ -15,7 +15,6 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import Button from '@material-ui/core/Button';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import LoadingContext from '../contexts/LoadingContext';
 import { MESSAGE_COUNT_QUERY } from '../../../api/messages/constants';
 
 const styles = {
@@ -28,8 +27,7 @@ const styles = {
   },
 };
 
-const handleLogout = (history, setLoading) => {
-  setLoading(true);
+const handleLogout = (history) => {
   Meteor.logout(() => {
     toast.success('Logout successful!', {
       position: toast.POSITION.BOTTOM_CENTER,
@@ -38,34 +36,28 @@ const handleLogout = (history, setLoading) => {
   });
 };
 
-const handleHome = (history, setLoading) => {
-  setLoading(true);
+const handleHome = (history) => {
   history.push('/');
 };
 
-const handleUsers = (history, setLoading) => {
-  setLoading(true);
+const handleUsers = (history) => {
   history.push('/users');
 };
 
-const handleLogin = (history, setLoading) => {
-  setLoading(true);
+const handleLogin = (history) => {
   history.push('/login');
 };
 
-const handleSettings = (history, setLoading) => {
-  setLoading(true);
+const handleSettings = (history) => {
   history.push('/settings');
 };
 
-const handleMessages = (history, setLoading) => {
-  setLoading(true);
+const handleMessages = (history) => {
   history.push('/messages');
 };
 
 const Navbar = (props) => {
   const { classes, history } = props;
-  const { setLoading } = useContext(LoadingContext);
   return (
     <Query query={MESSAGE_COUNT_QUERY} pollInterval={60000} fetchPolicy="no-cache">
       {({ data }) => {
@@ -74,14 +66,14 @@ const Navbar = (props) => {
           <div className={classes.root}>
             <AppBar position="fixed">
               <Toolbar>
-                <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history, setLoading)}>
+                <Typography variant="h6" color="inherit" className={classes.flex} onClick={() => handleHome(history)}>
                   Home
                 </Typography>
                 <CurrentUserContext.Consumer>
                   {currentUser => (
                     <React.Fragment>
                       {!currentUser || !currentUser._id ? (
-                        <Button name="loginButton" color="inherit" onClick={() => handleLogin(history, setLoading)}>
+                        <Button name="loginButton" color="inherit" onClick={() => handleLogin(history)}>
                           Login
                         </Button>
                       ) : null}
@@ -92,7 +84,7 @@ const Navbar = (props) => {
                         </Typography>
                       ) : null}
                       {currentUser && currentUser.admin ? (
-                        <Button size="small" name="usersButton" color="inherit" onClick={() => handleUsers(history, setLoading)}>
+                        <Button size="small" name="usersButton" color="inherit" onClick={() => handleUsers(history)}>
                           <PeopleIcon />
                         </Button>
                       ) : null}
@@ -102,7 +94,7 @@ const Navbar = (props) => {
                           size="small"
                           color="inherit"
                           aria-label="unread messages"
-                          onClick={() => handleMessages(history, setLoading)}
+                          onClick={() => handleMessages(history)}
                         >
                           <Badge badgeContent={messageCount} color="secondary">
                             <MailOutlineIcon />
@@ -110,12 +102,12 @@ const Navbar = (props) => {
                         </IconButton>
                       ) : null}
                       {currentUser && currentUser._id ? (
-                        <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history, setLoading)}>
+                        <Button name="settingsButton" color="inherit" onClick={() => handleSettings(history)}>
                           <SettingsIcon />
                         </Button>
                       ) : null}
                       {currentUser && currentUser._id ? (
-                        <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history, setLoading)}>
+                        <Button name="logoutButton" color="inherit" onClick={() => handleLogout(history)}>
                           <DirectionsRunIcon />
                         </Button>
                       ) : null}
