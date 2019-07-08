@@ -92,7 +92,14 @@ const styles = theme => ({
 
 const MessagesTable = ({ classes, messages, refetch, markAsRead, markAllAsRead }) => {
   const [width, setWidth] = useState(window.innerWidth);
-  const [selectedMessage, setSelectedMessage] = useState(last(messages));
+  const unreadMessages = messages && messages.filter(m => !m.isMarkedRead);
+  let msgs;
+  if (unreadMessages.length !== 0) {
+    msgs = unreadMessages;
+  } else {
+    msgs = messages;
+  }
+  const [selectedMessage, setSelectedMessage] = useState(last(msgs));
 
   const markMessageAsRead = (values) => {
     const { messageId } = values;
@@ -103,7 +110,7 @@ const MessagesTable = ({ classes, messages, refetch, markAsRead, markAllAsRead }
         markAsRead: {
           _id: messageId,
           __typename: 'Message',
-          isMarkedAsRead: true,
+          isMarkedRead: true,
         },
       },
     })
