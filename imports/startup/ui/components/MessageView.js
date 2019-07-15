@@ -29,7 +29,7 @@ const MessageView = ({ classes, message, isMobile }) => {
           <Typography variant="subtitle1" gutterBottom>
             Date:
             {' '}
-            {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
+            {moment(message.pubDate).format('dd, DD.MM.YY HH:mm')}
           </Typography>
           <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
         </>
@@ -50,7 +50,7 @@ const MessageView = ({ classes, message, isMobile }) => {
           <Typography variant="subtitle1" gutterBottom>
             Date:
             {' '}
-            {moment(message.pubDate).format('DD.MM.YYYY HH:mm')}
+            {moment(message.pubDate).format('dd, DD.MM.YY HH:mm')}
           </Typography>
           <div className={classes.content} dangerouslySetInnerHTML={{ __html: message.content }} />
         </>

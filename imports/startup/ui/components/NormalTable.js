@@ -72,7 +72,7 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
                   onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
                 >
                   <CustomTableCell>{message.title}</CustomTableCell>
-                  <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
+                  <CustomTableCell>{moment(message.pubDate).format('dd, DD.MM.YY HH:mm')}</CustomTableCell>
                   <CustomTableCell>{message.creator}</CustomTableCell>
                 </TableRow>
               );
@@ -84,7 +84,7 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
                   onClick={() => handleMessageSelect(message, setSelectedMessage, markMessageAsRead)}
                 >
                   <CustomTableCell>{message.title}</CustomTableCell>
-                  <CustomTableCell>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</CustomTableCell>
+                  <CustomTableCell>{moment(message.pubDate).format('dd, DD.MM.YY HH:mm')}</CustomTableCell>
                   <CustomTableCell>{message.creator}</CustomTableCell>
                 </TableRow>
               );
@@ -99,7 +99,7 @@ const NormalTable = ({ messages, classes, selectedMessageId, setSelectedMessage,
                     <b>{message.title}</b>
                   </CustomTableCell>
                   <CustomTableCell>
-                    <b>{moment(message.pubDate).format('DD.MM.YYYY HH:mm')}</b>
+                    <b>{moment(message.pubDate).format('dd, DD.MM.YY HH:mm')}</b>
                   </CustomTableCell>
                   <CustomTableCell>
                     <b>{message.creator}</b>
