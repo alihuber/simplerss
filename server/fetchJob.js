@@ -57,7 +57,7 @@ const parseMessages = (setting) => {
               }
             },
             (err) => {
-              logger.log({ level: 'warn', message: JSON.stringify(err) });
+              logger.log({ level: 'warn', message: `error fetching ${subs.url} : ${err.message}` });
             }
           );
         });
