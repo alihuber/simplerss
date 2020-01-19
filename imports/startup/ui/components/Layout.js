@@ -8,44 +8,25 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
   },
-  mobileRoot: {
-    flexGrow: 1,
-    marginTop: '60px',
-  },
   content: {
     padding: theme.spacing.unit * 5,
   },
 });
 
-const Layout = ({ history, children, classes }) => {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  if (width > 860) {
-    return (
-      <div>
-        <Navbar history={history} />
-        <div className={classes.root}>
-          <CssBaseline />
-          <div className={classes.content}>{children}</div>
-        </div>
+const Layout = ({ children, classes }) => {
+  return (
+    <div>
+      <Navbar />
+      <div className={classes.root}>
+        <CssBaseline />
+        <div className={classes.content}>{children}</div>
       </div>
-    );
-  } else {
-    return (
-      <div>
-        <Navbar history={history} isMobile />
-        <div className={classes.mobileRoot}>
-          <CssBaseline />
-          <div>{children}</div>
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 };
 
 Layout.propTypes = {
   children: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
 };
 

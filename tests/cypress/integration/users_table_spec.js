@@ -11,7 +11,7 @@ describe('display-users-table', () => {
   });
 
   it('should display no users button for normal user', () => {
-    cy.contains('Login').click();
+    cy.get('button[name="loginButton"]').click();
     cy.get('input[name=username]').type('testuser');
     cy.get('input[name=password]').type('testuser');
     cy.get('button[type=submit]').click();
@@ -24,7 +24,7 @@ describe('display-users-table', () => {
   });
 
   it('should display nothing for normal user visiting the url', () => {
-    cy.contains('Login').click();
+    cy.get('button[name="loginButton"]').click();
     cy.get('input[name=username]').type('testuser');
     cy.get('input[name=password]').type('testuser');
     cy.get('button[type=submit]').click();
@@ -36,11 +36,12 @@ describe('display-users-table', () => {
       cy.get('button').should('not.contain', 'Users');
       cy.get('h3').should('contain', 'Users');
       cy.get('table').should('not.exist');
+      cy.get('button[name="logoutButton"]').click();
     });
   });
 
   it('should display a users button for admin user', () => {
-    cy.contains('Login').click();
+    cy.get('button[name="loginButton"]').click();
     cy.get('input[name=username]').type('admin');
     cy.get('input[name=password]').type('adminadmin');
     cy.get('button[type=submit]').click();
@@ -48,12 +49,12 @@ describe('display-users-table', () => {
     cy.url().should('eq', 'http://localhost:3000/');
 
     cy.window().then(() => {
-      cy.get('button').should('contain', 'Users');
+      cy.get('button[name="usersButton"]').should('exist');
     });
   });
 
   it('should display a users table for admin user', () => {
-    cy.contains('Login').click();
+    cy.get('button[name="loginButton"]').click();
     cy.get('input[name=username]').type('admin');
     cy.get('input[name=password]').type('adminadmin');
     cy.get('button[type=submit]').click();

@@ -71,11 +71,11 @@ WebApp.connectHandlers.use('/graphql', (req, res) => {
   }
 });
 
-Accounts.onLogin((loginObj) => {
+Accounts.onLogin(loginObj => {
   logger.log({ level: 'info', message: `successful login for user ${loginObj.user.username} with _id ${loginObj.user._id}` });
 });
 
-Accounts.onLogout((logoutObj) => {
+Accounts.onLogout(logoutObj => {
   logger.log({ level: 'info', message: `successful logout for user ${logoutObj.user.username} with _id ${logoutObj.user._id}` });
 });
 

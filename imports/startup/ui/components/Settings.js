@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import AutoForm from 'uniforms-material/AutoForm';
 import SimpleSchema from 'simpl-schema';
 import CurrentUserContext from '../contexts/CurrentUserContext';
+import AnimContext from '../contexts/AnimContext';
 import Loading from './Loading';
 import { SETTINGS_QUERY, UPDATE_SETTINGS_MUTATION } from '../../../api/settings/constants';
 
@@ -48,7 +49,7 @@ const handleSubmit = (values, updateSettings, refetch) => {
         position: toast.POSITION.BOTTOM_CENTER,
       });
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error);
       toast.error('Update error!', {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -57,46 +58,54 @@ const handleSubmit = (values, updateSettings, refetch) => {
 };
 
 const Settings = ({ classes }) => {
+  const animClass = useContext(AnimContext);
   return (
-    <div className={classes.root}>
-      <Typography variant="h3" gutterBottom>
-        Settings
-      </Typography>
-      <CurrentUserContext.Consumer>
-        {currentUser => (currentUser ? (
-          <>
-            <Query query={SETTINGS_QUERY}>
-              {({ data, refetch, loading }) => {
-                if (loading) {
-                  return <Loading />;
-                }
-                if (data && data.settings) {
-                  const { settings } = data;
-                  return (
-                    <Mutation mutation={UPDATE_SETTINGS_MUTATION}>
-                      {(updateSettings) => {
-                        const editSettingsForm = ({ model }) => (
-                          <AutoForm schema={settingsSchema} onSubmit={doc => handleSubmit(doc, updateSettings, refetch)} model={model} />
-                        );
-                        editSettingsForm.propTypes = {
-                          model: PropTypes.object.isRequired,
-                        };
-                        const model = {};
-                        model.interval = settings.interval || '60';
-                        model.folders = settings.folders || [];
-                        return editSettingsForm({ model });
-                      }}
-                    </Mutation>
-                  );
-                } else {
-                  return <Loading />;
-                }
-              }}
-            </Query>
-          </>
-        ) : null)
-        }
-      </CurrentUserContext.Consumer>
+    <div className={animClass}>
+      <div className={classes.root}>
+        <Typography variant="h3" gutterBottom>
+          Settings
+        </Typography>
+        <CurrentUserContext.Consumer>
+          {currentUser =>
+            currentUser ? (
+              <>
+                <Query query={SETTINGS_QUERY}>
+                  {({ data, refetch, loading }) => {
+                    if (loading) {
+                      return <Loading />;
+                    }
+                    if (data && data.settings) {
+                      const { settings } = data;
+                      return (
+                        <Mutation mutation={UPDATE_SETTINGS_MUTATION}>
+                          {updateSettings => {
+                            const editSettingsForm = ({ model }) => (
+                              <AutoForm
+                                schema={settingsSchema}
+                                onSubmit={doc => handleSubmit(doc, updateSettings, refetch)}
+                                model={model}
+                              />
+                            );
+                            editSettingsForm.propTypes = {
+                              model: PropTypes.object.isRequired,
+                            };
+                            const model = {};
+                            model.interval = settings.interval || '60';
+                            model.folders = settings.folders || [];
+                            return editSettingsForm({ model });
+                          }}
+                        </Mutation>
+                      );
+                    } else {
+                      return <Loading />;
+                    }
+                  }}
+                </Query>
+              </>
+            ) : null
+          }
+        </CurrentUserContext.Consumer>
+      </div>
     </div>
   );
 };

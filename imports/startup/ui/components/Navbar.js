@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { Query } from 'react-apollo';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { withStyles } from '@material-ui/core/styles';
@@ -27,7 +28,7 @@ const styles = {
   },
 };
 
-const handleLogout = (history) => {
+const handleLogout = history => {
   Meteor.logout(() => {
     toast.success('Logout successful!', {
       position: toast.POSITION.BOTTOM_CENTER,
@@ -36,28 +37,29 @@ const handleLogout = (history) => {
   });
 };
 
-const handleHome = (history) => {
+const handleHome = history => {
   history.push('/');
 };
 
-const handleUsers = (history) => {
+const handleUsers = history => {
   history.push('/users');
 };
 
-const handleLogin = (history) => {
+const handleLogin = history => {
   history.push('/login');
 };
 
-const handleSettings = (history) => {
+const handleSettings = history => {
   history.push('/settings');
 };
 
-const handleMessages = (history) => {
+const handleMessages = history => {
   history.push('/messages');
 };
 
-const Navbar = (props) => {
-  const { classes, history } = props;
+const Navbar = props => {
+  const { classes } = props;
+  const history = useHistory();
   return (
     <Query query={MESSAGE_COUNT_QUERY} pollInterval={2000} fetchPolicy="no-cache">
       {({ data }) => {
@@ -84,10 +86,7 @@ const Navbar = (props) => {
                         </Typography>
                       ) : null}
                       {currentUser && currentUser.admin ? (
-                        <IconButton
-                          size="small" aria-label="users" name="usersButton" color="inherit"
-                          onClick={() => handleUsers(history)}
-                        >
+                        <IconButton size="small" aria-label="users" name="usersButton" color="inherit" onClick={() => handleUsers(history)}>
                           <PeopleIcon />
                         </IconButton>
                       ) : null}
@@ -139,7 +138,6 @@ const Navbar = (props) => {
 };
 
 Navbar.propTypes = {
-  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
 };
 
